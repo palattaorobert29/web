@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login and Sign Up</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  
+  <style>
+    body {
+      background-image: url('logos/background.png');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+      height: 100vh;
+    }
+
+    .form-container {
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      max-width: 400px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #4e4e4e;
+      margin-bottom: 20px;
+    }
+
+    .nav-tabs {
+      border-bottom: 2px solid #007bff;
+    }
+
+    .nav-link.active {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      border: none;
+      padding: 12px;
+    }
+
+    .form-label {
+      font-weight: bold;
+    }
+
+    .form-check-label {
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .form-container {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="form-container">
+      <h1 class="text-center">HGBaquiran College</h1>
+
+      <!-- Tab Navigation -->
+      <ul class="nav nav-tabs" id="authTabs" role="tablist">
+        <li class="nav-item">
+          <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab" aria-controls="login" aria-selected="true">Login</button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="signup-tab" data-bs-toggle="tab" data-bs-target="#signup" type="button" role="tab" aria-controls="signup" aria-selected="false">Sign Up</button>
+        </li>
+      </ul>
+
+      <!-- Tab Content -->
+      <div class="tab-content mt-4">
+        
+        <!-- Login Form -->
+        <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
+          <h3 class="text-center mb-4">Login</h3>
+          <form id="loginForm">
+            <div class="mb-3">
+              <label for="loginUsername" class="form-label">Username</label>
+              <input type="text" class="form-control" id="loginUsername" placeholder="Enter Username" required>
+            </div>
+            <div class="mb-3">
+              <label for="loginPassword" class="form-label">Password</label>
+              <input type="password" class="form-control" id="loginPassword" placeholder="Enter Password" required>
+              <div class="form-check mt-2">
+                <input type="checkbox" class="form-check-input" id="showLoginPassword" onclick="togglePassword('loginPassword')">
+                <label class="form-check-label" for="showLoginPassword">Show Password</label>
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary w-100" onclick="handleLogin()">Login</button>
+          </form>
+        </div>
+
+        <!-- Sign Up Form -->
+        <div class="tab-pane fade" id="signup" role="tabpanel" aria-labelledby="signup-tab">
+          <h3 class="text-center mb-4">Sign Up</h3>
+          <form id="signupForm">
+            <div class="mb-3">
+              <label for="signupUsername" class="form-label">Username</label>
+              <input type="text" class="form-control" id="signupUsername" placeholder="Enter Username" required>
+            </div>
+            <div class="mb-3">
+              <label for="signupPassword" class="form-label">Password</label>
+              <input type="password" class="form-control" id="signupPassword" placeholder="Enter Password" required>
+            </div>
+            <div class="mb-3">
+              <label for="signupConfirmPassword" class="form-label">Confirm Password</label>
+              <input type="password" class="form-control" id="signupConfirmPassword" placeholder="Confirm Password" required>
+            </div>
+            <div class="form-check mt-2">
+              <input type="checkbox" class="form-check-input" id="showSignupPasswords" onclick="togglePasswords(['signupPassword', 'signupConfirmPassword'])">
+              <label class="form-check-label" for="showSignupPasswords">Show Passwords</label>
+            </div>
+            <button type="button" class="btn btn-primary w-100" onclick="handleSignUp()">Sign Up</button>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+  <script>
+    // Variables to store user credentials
+    let registeredUsername = '';
+    let registeredPassword = '';
+
+    // Toggle Password Visibility for Single Field
+    function togglePassword(fieldId) {
+      const passwordField = document.getElementById(fieldId);
+      passwordField.type = passwordField.type === "password" ? "text" : "password";
+    }
+
+    // Toggle Password Visibility for Multiple Fields
+    function togglePasswords(fieldIds) {
+      fieldIds.forEach(id => {
+        const passwordField = document.getElementById(id);
+        passwordField.type = passwordField.type === "password" ? "text" : "password";
+      });
+    }
+
+    // Sign Up Function
+    function handleSignUp() {
+      const username = document.getElementById("signupUsername").value;
+      const password = document.getElementById("signupPassword").value;
+      const confirmPassword = document.getElementById("signupConfirmPassword").value;
+
+      if (!username || !password || !confirmPassword) {
+        alert("Please fill in all fields.");
+      } else if (password !== confirmPassword) {
+        alert("Passwords do not match.");
+      } else {
+        // Store user credentials
+        registeredUsername = username;
+        registeredPassword = password;
+        alert("Sign Up Successful! You can now log in.");
+        // Switch to Login tab
+        document.getElementById("login-tab").click();
+      }
+    }
+
+    // Login Function
+    function handleLogin() {
+      const username = document.getElementById("loginUsername").value;
+      const password = document.getElementById("loginPassword").value;
+
+      if (!username || !password) {
+        alert("Please fill in all fields.");
+      } else if (username === registeredUsername && password === registeredPassword) {
+        alert("Login Successful!");
+        // Redirect to home page
+        window.location.href = "index.html";
+      } else {
+        alert("Incorrect username or password. Please try again.");
+      }
+    }
+  </script>
+</body>
+</html>
